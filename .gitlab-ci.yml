@@ -1,0 +1,49 @@
+# GitLab CI: сборка на каждый MR, публикация через GitLab Pages на основной ветке.
+# Репозиторий = содержимое этой папки (package.json в корне).
+
+stages: [build, deploy]
+
+default:
+  image: node:22-alpine
+  cache:
+    key:
+      files: [package-lock.json]
+    paths: [.npm/]
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  # На Pages нет серверных функций — форма открывает Telegram с готовым текстом.
+  PUBLIC_FORM_MODE: static
+
+# Проверка сборки для merge request'ов
+build:mr:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths: [dist]
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# Публикация. GitLab Pages отдаёт содержимое каталога public/,
+# поэтому после сборки переименовываем dist → public.
+pages:
+  stage: deploy
+  script:
+    - npm ci
+    - |
+      if [ -n "$CI_PAGES_URL" ]; then
+        export SITE_URL="$CI_PAGES_URL"
+        export BASE_PATH="$(printf '%s' "$CI_PAGES_URL" | sed -E 's#^https?://[^/]+##')/"
+      else
+        export BASE_PATH="/"
+      fi
+    - echo "site=$SITE_URL base=$BASE_PATH"
+    - npm run build
+    - rm -rf public && mv dist public
+  artifacts:
+    paths: [public]
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

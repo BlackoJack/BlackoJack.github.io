@@ -1,0 +1,115 @@
+---
+import { pains } from "../data/pains";
+---
+
+<section class="border-b border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)]">
+  <div class="mx-auto w-full max-w-[1240px] px-6 py-16 md:px-10 md:py-24">
+    <div class="max-w-[62ch]">
+      <p class="mono text-muted">01 — боли</p>
+      <h2 class="mt-4 text-[clamp(28px,4.2vw,46px)] font-semibold leading-[1.05] tracking-[-0.03em]">
+        Узнаёте себя?
+      </h2>
+      <p class="mt-4 text-[16px] leading-relaxed text-ink/75">
+        Отметьте, что совпало. Подсвечу, что с этим обычно делают, — без терминов и без «внедрим комплексное
+        решение».
+      </p>
+    </div>
+
+    <div
+      id="pains"
+      class="mt-10 grid gap-px overflow-hidden border border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] bg-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] md:grid-cols-2"
+    >
+      {
+        pains.map((pain, i) => (
+          <button type="button" class="pain" data-pain={pain.id} aria-pressed="false">
+            <span class="mono text-muted">{String(i + 1).padStart(2, "0")}</span>
+            <span class="text-[16px] leading-snug md:text-[17px]">{pain.text}</span>
+            <span class="box" aria-hidden="true" />
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+      <p id="pains-state" class="text-[14px] text-ink/70">
+        Ничего не отмечено — просто читайте дальше.
+      </p>
+      <a href="#contact" class="btn btn-dark hidden" id="pains-cta">
+        Обсудить выбранное
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const painsRoot = document.getElementById("pains");
+  const state = document.getElementById("pains-state");
+  const cta = document.getElementById("pains-cta") as HTMLAnchorElement | null;
+  const task = document.getElementById("task") as HTMLTextAreaElement | null;
+
+  if (painsRoot && state) {
+    const buttons = Array.from(painsRoot.querySelectorAll<HTMLButtonElement>(".pain"));
+    const services = Array.from(document.querySelectorAll<HTMLElement>(".service"));
+    const labels: Record<string, string> = {};
+
+    buttons.forEach((b) => {
+      const text = b.querySelector("span:nth-child(2)")?.textContent?.trim() ?? "";
+      if (b.dataset.pain) labels[b.dataset.pain] = text;
+    });
+
+    const selected = () => buttons.filter((b) => b.getAttribute("aria-pressed") === "true");
+
+    const sync = (writeUrl = true) => {
+      const keys = selected().map((b) => b.dataset.pain!).filter(Boolean);
+
+      services.forEach((card) => {
+        const related = (card.dataset.pains ?? "").split(",").filter(Boolean);
+        card.classList.toggle("is-related", related.some((k) => keys.includes(k)));
+      });
+
+      if (keys.length === 0) {
+        state.textContent = "Ничего не отмечено — просто читайте дальше.";
+        cta?.classList.add("hidden");
+      } else {
+        state.textContent = `Отмечено ${keys.length} из ${buttons.length}. Ниже подсвечены услуги, которые с этим работают.`;
+        cta?.classList.remove("hidden");
+      }
+
+      if (writeUrl) {
+        const url = new URL(window.location.href);
+        if (keys.length) url.searchParams.set("p", keys.join(","));
+        else url.searchParams.delete("p");
+        history.replaceState(null, "", url);
+      }
+
+      if (cta && task && keys.length) {
+        const list = keys.map((k) => `— ${labels[k] ?? k}`).join("\n");
+        cta.dataset.message = `Здравствуйте! Хочу обсудить инфраструктуру. Что у нас происходит:\n${list}`;
+      }
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const pressed = button.getAttribute("aria-pressed") === "true";
+        button.setAttribute("aria-pressed", String(!pressed));
+        sync();
+      });
+    });
+
+    cta?.addEventListener("click", () => {
+      if (task && cta.dataset.message) {
+        task.value = cta.dataset.message;
+      }
+    });
+
+    const params = new URLSearchParams(window.location.search).get("p");
+    if (params) {
+      const keys = params.split(",");
+      buttons.forEach((b) => {
+        if (b.dataset.pain && keys.includes(b.dataset.pain)) b.setAttribute("aria-pressed", "true");
+      });
+    }
+    sync(false);
+  }
+</script>

@@ -1,0 +1,91 @@
+---
+const nodes = [
+  {
+    name: "Сайт",
+    meta: "99.98% uptime",
+    caption: "Слежу, чтобы страница открывалась быстро и не падала, даже когда пришла реклама.",
+  },
+  {
+    name: "Приложение",
+    meta: "выкладка 5 мин",
+    caption: "Обновляю без простоя: посетители не замечают, что вышла новая версия.",
+  },
+  {
+    name: "База данных",
+    meta: "бэкап 4 раза в день",
+    caption: "Слежу за нагрузкой и местом на диске, чтобы база не закончилась в субботу вечером.",
+  },
+  {
+    name: "Бэкап",
+    meta: "проверен",
+    caption: "Раз в месяц по-настоящему восстанавливаю копию, а не просто смотрю, что файл на месте.",
+  },
+];
+
+const defaultCaption =
+  "Так выглядит инфраструктура, когда за ней смотрят. Нажмите на любой блок — покажу, что бывает без присмотра.";
+---
+
+<div class="schem">
+  <div class="schem-stack">
+    {
+      nodes.map((node, i) => (
+        <>
+          <button
+            type="button"
+            class="node"
+            data-name={node.name}
+            data-caption={node.caption}
+            aria-label={`${node.name}. ${node.caption}`}
+          >
+            <span class="dot" aria-hidden="true" />
+            <span class="node-name">{node.name}</span>
+            <span class="node-meta">{node.meta}</span>
+          </button>
+          {i < nodes.length - 1 && <div class="connector" aria-hidden="true" />}
+        </>
+      ))
+    }
+  </div>
+
+  <p class="schem-caption" id="schem-caption" aria-live="polite">{defaultCaption}</p>
+</div>
+
+<script>
+  const caption = document.getElementById("schem-caption");
+  if (caption) {
+    const defaultText = caption.textContent ?? "";
+    const nodes = Array.from(document.querySelectorAll<HTMLButtonElement>(".node"));
+    let timer: number | undefined;
+
+    const isBroken = () => document.querySelector(".node.is-broken") !== null;
+
+    nodes.forEach((node) => {
+      const show = () => {
+        if (!node.classList.contains("is-broken")) {
+          caption.textContent = node.dataset.caption ?? defaultText;
+        }
+      };
+
+      node.addEventListener("mouseenter", show);
+      node.addEventListener("focus", show);
+
+      node.addEventListener("mouseleave", () => {
+        if (!isBroken()) caption.textContent = defaultText;
+      });
+
+      node.addEventListener("click", () => {
+        window.clearTimeout(timer);
+        nodes.forEach((n) => n.classList.remove("is-broken"));
+        node.classList.add("is-broken");
+        caption.textContent = `«${node.dataset.name}» упал. Без мониторинга вы узнаете об этом от клиента — обычно через час.`;
+
+        timer = window.setTimeout(() => {
+          node.classList.remove("is-broken");
+          caption.textContent =
+            "Поднялось само: систему перезапустил кластер, алерт пришёл в Telegram. Так и должно работать.";
+        }, 2600);
+      });
+    });
+  }
+</script>

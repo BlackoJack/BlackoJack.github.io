@@ -1,0 +1,441 @@
+@import "@fontsource-variable/onest/index.css";
+@import "@fontsource-variable/unbounded/index.css";
+@import "@fontsource-variable/jetbrains-mono/index.css";
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f1eee7;
+  --color-paper-soft: #e9e5da;
+  --color-ink: #111214;
+  --color-muted: #5f635e;
+  --color-lime: #c6f24e;
+  --color-dark: #0e0f10;
+  --color-alert: #e4572e;
+
+  --font-display: "Unbounded Variable", "Unbounded", system-ui, sans-serif;
+  --font-sans: "Onest Variable", "Onest", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+
+  --ease-out-quint: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* ── зернистость поверх фона ───────────────────────────── */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── типографика ───────────────────────────────────────── */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.hair {
+  border-color: color-mix(in srgb, var(--color-ink) 13%, transparent);
+}
+
+/* ── кнопки ────────────────────────────────────────────── */
+@layer components {
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 2px;
+  padding: 0.95rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 0.2s var(--ease-out-quint), background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-lime {
+  background: var(--color-lime);
+  color: var(--color-ink);
+}
+
+.btn-lime:hover {
+  background: color-mix(in srgb, var(--color-lime) 80%, var(--color-ink));
+}
+
+.btn-ghost {
+  border: 1px solid color-mix(in srgb, var(--color-ink) 22%, transparent);
+  color: var(--color-ink);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 4%, transparent);
+}
+
+.btn-dark {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.btn-dark:hover {
+  background: color-mix(in srgb, var(--color-ink) 85%, var(--color-lime));
+}
+}
+
+/* ── появление при скролле ─────────────────────────────── */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 22%;
+    }
+  }
+}
+
+/* ── схема в hero ──────────────────────────────────────── */
+.schem {
+  border: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent);
+  background: color-mix(in srgb, var(--color-paper) 70%, white);
+  padding: 1.1rem;
+}
+
+.schem-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent);
+  background: var(--color-paper);
+  padding: 0.85rem 0.9rem;
+  border-radius: 2px;
+  text-align: left;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s, transform 0.25s var(--ease-out-quint);
+}
+
+
+.node:hover {
+  border-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
+  transform: translateX(2px);
+}
+
+.node-name {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.node-meta {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-lime);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-lime) 28%, transparent);
+  flex: none;
+  transition: background-color 0.25s, box-shadow 0.25s;
+}
+
+.connector {
+  width: 1px;
+  height: 18px;
+  margin-left: 1.55rem;
+  background: color-mix(in srgb, var(--color-ink) 22%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.connector::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-ink);
+  transform-origin: top;
+  animation: flow 2.6s var(--ease-out-quint) infinite;
+  opacity: 0.55;
+}
+
+@keyframes flow {
+  0% { transform: scaleY(0); opacity: 0; }
+  30% { opacity: 0.65; }
+  70% { transform: scaleY(1); opacity: 0.65; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+@keyframes node-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.node.is-broken {
+  border-color: color-mix(in srgb, var(--color-alert) 45%, transparent);
+  background: color-mix(in srgb, var(--color-alert) 8%, var(--color-paper));
+}
+
+.node.is-broken .dot {
+  background: var(--color-alert);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-alert) 25%, transparent);
+  animation: blink 0.7s steps(2, end) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.35; }
+}
+
+.schem-caption {
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed color-mix(in srgb, var(--color-ink) 16%, transparent);
+  min-height: 3.2rem;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+/* ── боли ──────────────────────────────────────────────── */
+.pain {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 1.15rem 1.25rem;
+  background: var(--color-paper);
+  text-align: left;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.pain:hover {
+  background: color-mix(in srgb, var(--color-lime) 22%, var(--color-paper));
+}
+
+.pain[aria-pressed="true"] {
+  background: var(--color-lime);
+}
+
+.pain .box {
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 35%, transparent);
+  border-radius: 2px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.pain[aria-pressed="true"] .box {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-lime);
+}
+
+.pain[aria-pressed="true"] .box::after {
+  content: "✓";
+}
+
+/* ── услуги ────────────────────────────────────────────── */
+.service {
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent);
+  padding: 1.9rem 0.5rem 1.9rem 0;
+  transition: background-color 0.25s;
+}
+
+.service.is-related {
+  background: color-mix(in srgb, var(--color-lime) 11%, var(--color-paper));
+}
+
+.related-flag {
+  display: none;
+  margin-left: auto;
+  align-self: center;
+  background: var(--color-lime);
+  color: var(--color-ink);
+  padding: 0.15rem 0.4rem;
+  border-radius: 2px;
+  font-size: 9.5px;
+}
+
+.service.is-related .related-flag {
+  display: inline-block;
+}
+
+.service .marker {
+  color: color-mix(in srgb, var(--color-ink) 30%, transparent);
+  transition: color 0.25s;
+}
+
+.service.is-related .marker {
+  color: var(--color-ink);
+}
+
+/* ── аккордеон ─────────────────────────────────────────── */
+details.faq-item {
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent);
+}
+
+details.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+details.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq-item summary::after {
+  content: "+";
+  font-family: var(--font-mono);
+  font-size: 18px;
+  line-height: 1;
+  flex: none;
+  transition: transform 0.2s var(--ease-out-quint);
+}
+
+details.faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+details.faq-item .answer {
+  padding: 0 2.5rem 1.3rem 0;
+  color: color-mix(in srgb, var(--color-ink) 72%, var(--color-paper));
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+/* ── форма ─────────────────────────────────────────────── */
+.field {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 22%, transparent);
+  background: transparent;
+  border-radius: 2px;
+  padding: 0.8rem 0.9rem;
+  font-size: 15px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--color-ink);
+  background: color-mix(in srgb, white 45%, transparent);
+}
+
+.field::placeholder {
+  color: color-mix(in srgb, var(--color-muted) 80%, transparent);
+}
+
+/* ── прочее ────────────────────────────────────────────── */
+.marquee-line {
+  display: block;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-ink) 13%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--color-muted);
+}

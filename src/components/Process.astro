@@ -1,0 +1,47 @@
+---
+import { processSteps, formats } from "../data/process";
+---
+
+<section id="process" class="border-b border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)]">
+  <div class="mx-auto w-full max-w-[1240px] px-6 py-16 md:px-10 md:py-24">
+    <p class="mono text-muted">03 — как проходит работа</p>
+    <h2 class="mt-4 max-w-[24ch] text-[clamp(28px,4.2vw,46px)] font-semibold leading-[1.05] tracking-[-0.03em]">
+      Четыре шага, без сюрпризов
+    </h2>
+
+    <ol class="mt-12 grid gap-px bg-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] md:grid-cols-2 lg:grid-cols-4">
+      {
+        processSteps.map((step) => (
+          <li class="bg-paper p-6 lg:p-7">
+            <span class="mono text-muted">{step.num}</span>
+            <h3 class="mt-4 font-display text-[18px] font-semibold tracking-[-0.02em]">{step.title}</h3>
+            <p class="mt-3 text-[14px] leading-relaxed text-ink/75">{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="mt-16">
+      <p class="mono text-muted">04 — форматы</p>
+      <div class="mt-6 grid gap-px bg-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] border border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] md:grid-cols-2">
+        {
+          formats.map((format) => (
+            <div class="flex items-start justify-between gap-6 bg-paper p-6 lg:p-7">
+              <div>
+                <h3 class="font-display text-[18px] font-semibold tracking-[-0.02em]">{format.title}</h3>
+                <p class="mt-2 max-w-[38ch] text-[14px] leading-relaxed text-ink/75">{format.text}</p>
+              </div>
+              <span class="mono shrink-0 border border-[color-mix(in_srgb,var(--color-ink)_18%,transparent)] px-2 py-1 text-muted">
+                {format.tag}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="mt-5 text-[14px] leading-relaxed text-ink/70">
+        Стоимость зависит от объёма. Называю вилку после разговора — не «по запросу».
+      </p>
+    </div>
+  </div>
+</section>

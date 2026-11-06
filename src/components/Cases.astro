@@ -1,0 +1,53 @@
+---
+import { cases } from "../data/cases";
+import { config } from "../config";
+---
+
+<section id="cases" class="bg-dark text-paper">
+  <div class="mx-auto w-full max-w-[1240px] px-6 py-16 md:px-10 md:py-24">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="mono text-lime">05 — кейсы</p>
+        <h2 class="mt-4 max-w-[20ch] text-[clamp(28px,4.2vw,46px)] font-semibold leading-[1.05] tracking-[-0.03em]">
+          Что было и что стало
+        </h2>
+      </div>
+      <p class="max-w-[34ch] text-[15px] leading-relaxed text-paper/60">
+        Клиентов не называю. Цифры — из рабочих проектов, проверяются на созвоне.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-px bg-paper/15 md:grid-cols-3">
+      {
+        cases.map((item) => (
+          <article class="flex flex-col bg-dark p-6 lg:p-7">
+            <p class="font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-tight tracking-[-0.03em] text-lime">
+              {item.metric}
+            </p>
+            <p class="mono mt-2 text-paper/50">{item.metricNote}</p>
+
+            <h3 class="mt-8 font-display text-[18px] font-semibold tracking-[-0.02em]">{item.title}</h3>
+            <p class="mt-3 flex-1 text-[14px] leading-relaxed text-paper/70">{item.text}</p>
+
+            {item.link && (
+              <a
+                href={item.link.url}
+                target="_blank"
+                rel="noopener"
+                class="mono mt-6 inline-flex items-center gap-2 text-lime transition-opacity hover:opacity-70"
+              >
+                {item.link.label}
+                <span aria-hidden="true">↗</span>
+              </a>
+            )}
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="mono mt-10 text-paper/55">
+      Полный разбор платформы — в открытом репозитории:
+      <span class="normal-case tracking-normal">{config.portfolio.label}</span>
+    </p>
+  </div>
+</section>
