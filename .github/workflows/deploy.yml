@@ -53,4 +53,5 @@ jobs:
 
       - name: Summary
         if: github.event_name != 'pull_request'
-        run: echo "Опубликовано: https://${{ github.repository_owner }}.github.io/" >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          echo "Опубликовано: https://${{ github.repository_owner }}.github.io/" >> "$GITHUB_STEP_SUMMARY"
