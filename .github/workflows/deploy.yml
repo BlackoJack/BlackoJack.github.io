@@ -7,9 +7,7 @@ name: Deploy
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
@@ -17,7 +15,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build
+    name: Build & publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -35,24 +33,24 @@ jobs:
           # Для репозитория <user>.github.io база — корень, иначе подпапка с именем репозитория.
           SITE_URL: https://${{ github.repository_owner }}.github.io
           BASE_PATH: ${{ github.event.repository.name == format('{0}.github.io', github.repository_owner) && '/' || format('/{0}/', github.event.repository.name) }}
-          # На Pages нет серверных функций: форма открывает Telegram с готовым текстом.
+          # Здесь нет серверных функций: форма открывает Telegram с готовым текстом.
           PUBLIC_FORM_MODE: static
         run: npm run build
 
-      - name: Upload artifact
+      - name: Publish to gh-pages
         if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: dist
+        run: |
+          set -euo pipefail
+          cd dist
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "deploy ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy:
-    name: Deploy
-    needs: build
-    if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Summary
+        if: github.event_name != 'pull_request'
+        run: echo "Опубликовано: https://${{ github.repository_owner }}.github.io/" >> "$GITHUB_STEP_SUMMARY"
