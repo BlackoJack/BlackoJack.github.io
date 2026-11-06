@@ -50,22 +50,27 @@ npm run build    # статика в dist/
 
 ## Деплой на GitHub Pages
 
-Репозиторий = содержимое этой папки (`package.json` в корне). Всё остальное уже настроено: `.github/workflows/deploy.yml` собирает сайт и публикует его.
+Репозиторий = содержимое этой папки (`package.json` в корне). Сайт уже опубликован:
+**https://blackojack.github.io/**
+
+Как устроено: `github/workflows/deploy.yml` собирает статику и пушит её в ветку `gh-pages`, а Pages просто отдаёт эту ветку. Так надёжнее, чем деплой через Pages Actions API: не зависите от состояния Pages и от версий `deploy-pages`.
+
+Настройка нового репозитория с нуля:
 
 1. Создайте репозиторий на GitHub (публичный — Pages бесплатны; приватному нужен платный план).
-2. Запушьте:
+2. Запушьте код:
    ```bash
    git remote add origin git@github.com:BlackoJack/<имя-репозитория>.git
    git push -u origin main
    ```
-3. В репозитории: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-4. Пуш в `main` → через минуту сайт на `https://blackojack.github.io/<имя-репозитория>/`.
+3. **Settings → Pages → Build and deployment → Source: Deploy from a branch → `gh-pages` / `(root)`**.
+4. Первый пуш в `main` создаст ветку `gh-pages`; после этого сайт появится по адресу `https://<ник>.github.io/<имя-репозитория>/` (для репозитория `<ник>.github.io` — в корне).
 
-Как это работает: workflow сам подставляет `SITE_URL` и `BASE_PATH`, поэтому сайт живёт в подпапке с именем репозитория и стили не отваливаются. Если репозиторий называется `<ник>.github.io`, база автоматически станет корнем.
+`SITE_URL` и `BASE_PATH` workflow вычисляет сам: для `<ник>.github.io` база `/`, для остальных — подпапка с именем репозитория. Поэтому стили и `_astro/` не отваливаются ни в одном из вариантов.
 
-**Свой домен**: добавьте `public/CNAME` с доменом (`example.com`) и настройте CNAME-запись у регистратора. Затем поменяйте `SITE_URL`/`BASE_PATH` в workflow на `https://example.com` и `/`.
+Pull request собирается, но не публикуется — удобно проверять, что ничего не сломалось.
 
-**Pull request** собирается, но не деплоится — удобно смотреть, что ничего не сломалось.
+**Свой домен**: положите домен в `public/CNAME` (например, `example.com`), настройте CNAME-запись у регистратора и в **Settings → Pages → Custom domain**. Затем в workflow поменяйте `SITE_URL` на `https://example.com`, а `BASE_PATH` — на `/`.
 
 ## Деплой на GitLab Pages
 
