@@ -1,5 +1,5 @@
 ---
-import { config } from "../config";
+import { config, channels } from "../config";
 import Schematic from "./Schematic.astro";
 ---
 
@@ -22,12 +22,28 @@ import Schematic from "./Schematic.astro";
           больше пятидесяти серверов.
         </p>
 
-        <div class="mt-8 flex flex-wrap items-center gap-3">
-          <a href={config.contacts.telegram.url} class="btn btn-lime" target="_blank" rel="noopener">
-            Написать в Telegram
+        <div class="mt-8 flex flex-wrap items-center gap-2.5">
+          <a
+            href={channels[0].url}
+            class="btn btn-sm btn-lime"
+            target="_blank"
+            rel="noopener"
+            aria-label="Написать в Telegram"
+          >
+            Telegram
             <span aria-hidden="true">→</span>
           </a>
-          <a href="#services" class="btn btn-ghost">Что я умею</a>
+          {channels.slice(1).map((channel) => (
+            <a
+              href={channel.url}
+              class="btn btn-sm btn-ghost"
+              target="_blank"
+              rel="noopener"
+              aria-label={`Написать в ${channel.label}`}
+            >
+              {channel.label}
+            </a>
+          ))}
         </div>
 
         <p class="mono mt-7 text-muted">Первый разговор — 30 минут, бесплатно</p>

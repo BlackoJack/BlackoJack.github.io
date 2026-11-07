@@ -1,5 +1,5 @@
 ---
-import { config } from "../config";
+import { config, channels } from "../config";
 const year = 2026;
 ---
 
@@ -7,12 +7,32 @@ const year = 2026;
   <div class="mx-auto w-full max-w-[1240px] px-6 py-12 md:px-10">
     <div class="flex flex-col gap-8 border-t border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] pt-8 md:flex-row md:items-start md:justify-between">
       <div>
-        <p class="font-display text-[18px] font-semibold tracking-[-0.02em]">{config.name}</p>
-        <p class="mono mt-2 text-muted">{config.role} · {config.city}</p>
+        <a href="#top" class="group inline-flex items-center gap-2.5" aria-label={`${config.brand.wordmark} — наверх`}>
+          <span class="grid h-8 w-8 place-items-center bg-lime" aria-hidden="true">
+            <svg viewBox="0 0 36 36" class="h-8 w-8" role="presentation">
+              <path
+                d="M5.5 18.5h5.6l3.1-6.6 3.9 12.6 2.9-8.4 2 2.4h6.5"
+                fill="none"
+                stroke="#111214"
+                stroke-width="2.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <span class="font-display text-[16px] font-semibold lowercase tracking-[-0.03em]">{config.brand.wordmark}</span>
+        </a>
+        <p class="mono mt-3 text-muted">{config.brand.tagline}</p>
+        <p class="mt-1 text-[13px] text-ink/60">{config.name} · {config.city} · {config.role}</p>
       </div>
 
       <nav class="flex flex-wrap gap-x-7 gap-y-2" aria-label="Контакты">
-        <a href={config.contacts.telegram.url} class="text-[14px] text-ink/75 transition-colors hover:text-ink" target="_blank" rel="noopener">Telegram</a>
+        {channels.map((channel) => (
+          <a
+            href={channel.url}
+            class="text-[14px] text-ink/75 transition-colors hover:text-ink"
+            target="_blank"
+            rel="noopener">{channel.label}</a>
+        ))}
         <a href={config.contacts.email.url} class="text-[14px] text-ink/75 transition-colors hover:text-ink">Почта</a>
         <a href={config.contacts.github.url} class="text-[14px] text-ink/75 transition-colors hover:text-ink" target="_blank" rel="noopener">GitHub</a>
         <a href="#top" class="text-[14px] text-ink/75 transition-colors hover:text-ink">Наверх ↑</a>
@@ -34,9 +54,15 @@ const year = 2026;
   </div>
 </footer>
 
-<div class="fixed inset-x-0 bottom-0 z-30 border-t border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] bg-paper/95 p-3 backdrop-blur md:hidden">
-  <a href={config.contacts.telegram.url} class="btn btn-lime w-full" target="_blank" rel="noopener">
-    Написать в Telegram
-    <span aria-hidden="true">→</span>
-  </a>
+<div class="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] bg-paper/95 p-3 backdrop-blur md:hidden">
+  {channels.map((channel) => (
+    <a
+      href={channel.url}
+      class:list={[
+        "btn flex-1 !px-2 !py-2.5 !text-[10px]",
+        channel.id === "telegram" ? "btn-lime" : "btn-ghost",
+      ]}
+      target="_blank"
+      rel="noopener">{channel.label}</a>
+  ))}
 </div>

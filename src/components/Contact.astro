@@ -1,5 +1,5 @@
 ---
-import { config } from "../config";
+import { config, channels } from "../config";
 ---
 
 <section id="contact" class="border-b border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)]">
@@ -16,18 +16,20 @@ import { config } from "../config";
         </p>
 
         <div class="mt-10 space-y-px border-y border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)]">
-          <a
-            href={config.contacts.telegram.url}
-            target="_blank"
-            rel="noopener"
-            class="group flex items-center justify-between gap-4 py-4 transition-colors hover:text-ink"
-          >
-            <span class="mono text-muted">Telegram</span>
-            <span class="flex items-center gap-3 text-[16px]">
-              {config.contacts.telegram.label}
-              <span class="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
-            </span>
-          </a>
+          {channels.map((channel) => (
+            <a
+              href={channel.url}
+              target="_blank"
+              rel="noopener"
+              class="group flex items-center justify-between gap-4 py-4 transition-colors hover:text-ink"
+            >
+              <span class="mono text-muted">{channel.label}</span>
+              <span class="flex items-center gap-3 text-[16px]">
+                Написать
+                <span class="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
+              </span>
+            </a>
+          ))}
           <a
             href={config.contacts.email.url}
             class="group flex items-center justify-between gap-4 border-t border-[color-mix(in_srgb,var(--color-ink)_13%,transparent)] py-4"

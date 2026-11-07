@@ -11,7 +11,8 @@ const ogUrl = new URL(`${base}og.png`, origin).toString();
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
-  name: `${config.name} — ${config.role}`,
+  name: `${config.brand.wordmark} — ${config.role}`,
+  slogan: config.brand.tagline,
   description,
   url: config.siteUrl,
   areaServed: "RU",

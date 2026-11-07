@@ -7,7 +7,15 @@
  */
 
 export const config = {
-  // Как вас зовут на сайте
+  // ─── Бренд ───────────────────────────────────────────────
+  // Имя сайта в шапке, футере, <title> и OG-картинке.
+  // Меняете здесь — меняется везде. Варианты на замену: "не падает", "99.9", "infra"
+  brand: {
+    wordmark: "uptime",
+    tagline: "инфраструктура, которая не падает",
+  },
+
+  // Как вас зовут (нужно в блоке «кто я» и в подписи футера)
   name: "Иван Раенко",
   shortName: "Иван",
   initials: "ИР",
@@ -20,6 +28,13 @@ export const config = {
   contacts: {
     // TODO: проверьте ссылку — сейчас взята из резюме
     telegram: { label: "@devopsnsk", url: "https://t.me/devopsnsk" },
+    // TODO: проверьте ссылку Max — сейчас взята из резюме
+    max: {
+      label: "Max",
+      url: "https://max.ru/u/f9LHodD0cOJRMeqwry1H3VOwIUXQYiUHdfjxw4NfCPLSptlnNq9DlD3CL60",
+    },
+    // TODO: проверьте номер для WhatsApp (сейчас — номер из резюме)
+    whatsapp: { label: "WhatsApp", url: "https://wa.me/79130197199" },
     // TODO: проверьте почту — сейчас взята из резюме
     email: { label: "devopsnskru@gmail.com", url: "mailto:devopsnskru@gmail.com" },
     // TODO: проверьте профиль
@@ -45,7 +60,7 @@ export const config = {
   selfHostedUrl: "",
 
   meta: {
-    title: "Иван Раенко — DevOps-инженер: чтобы сервисы не падали",
+    title: "uptime — инфраструктура, которая не падает",
     description:
       "Настраиваю инфраструктуру так, чтобы сайт не падал, релизы выходили за минуты, а данные не терялись. 8 лет опыта, удалённо. Первый разговор — бесплатно.",
     // OG-картинка 1200×630 лежит в public/og.png
@@ -59,5 +74,12 @@ export function telegramWithText(text: string): string {
   url.searchParams.set("text", text);
   return url.toString();
 }
+
+/** Мессенджеры в порядке показа: hero, блок контактов, футер, мобильная плашка. */
+export const channels = [
+  { id: "telegram", label: "Telegram", url: config.contacts.telegram.url },
+  { id: "max", label: "Max", url: config.contacts.max.url },
+  { id: "whatsapp", label: "WhatsApp", url: config.contacts.whatsapp.url },
+] as const;
 
 export type Config = typeof config;

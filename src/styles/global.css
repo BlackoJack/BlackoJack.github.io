@@ -104,6 +104,20 @@
   transform: translateY(1px);
 }
 
+.btn-sm {
+  padding: 0.7rem 0.85rem;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+@media (min-width: 768px) {
+  .btn-sm {
+    padding: 0.95rem 1.4rem;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+}
+
 .btn-lime {
   background: var(--color-lime);
   color: var(--color-ink);
